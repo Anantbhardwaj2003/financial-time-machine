@@ -11,6 +11,7 @@ import { OnboardingGoals } from "@/components/onboarding/OnboardingGoals";
 import { OnboardingUpload } from "@/components/onboarding/OnboardingUpload";
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Onboarding = () => {
   const [step, setStep] = useState(1);
@@ -28,6 +29,7 @@ const Onboarding = () => {
   });
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const totalSteps = 7;
 
@@ -87,8 +89,8 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <Card className="w-full max-w-2xl shadow-lg">
-        <CardContent className="pt-6">
+      <Card className={`w-full shadow-lg ${isMobile ? 'max-w-full' : 'max-w-2xl'}`}>
+        <CardContent className={`${isMobile ? 'p-4' : 'pt-6 p-6'}`}>
           <OnboardingProgress currentStep={step} totalSteps={totalSteps} />
           {renderStep()}
         </CardContent>
