@@ -60,7 +60,7 @@ const Onboarding = () => {
     });
     
     // Navigate to dashboard
-    navigate("/");
+    navigate("/dashboard");
   };
 
   // Render the current step
