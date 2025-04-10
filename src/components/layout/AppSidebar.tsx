@@ -64,7 +64,6 @@ export function AppSidebar() {
         "h-screen border-r",
         isCollapsed ? "w-[70px]" : "w-[240px]"
       )}
-      defaultCollapsed={false}
       collapsed={isCollapsed}
     >
       <SidebarHeader className="flex h-16 items-center border-b px-4">
