@@ -15,6 +15,7 @@ import PastDecisions from "./pages/PastDecisions";
 import AiAdvisor from "./pages/AiAdvisor";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import Onboarding from "./pages/Onboarding";
 
 const queryClient = new QueryClient();
 
@@ -26,13 +27,14 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={<Index />} />
             <Route path="/simulator" element={<Simulator />} />
             <Route path="/goals" element={<Goals />} />
             <Route path="/spending" element={<Spending />} />
             <Route path="/past-decisions" element={<PastDecisions />} />
             <Route path="/ai-advisor" element={<AiAdvisor />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/" element={<Onboarding />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
