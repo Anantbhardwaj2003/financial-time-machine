@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -23,8 +23,12 @@ import {
   MessageSquare, 
   Settings, 
   Clock, 
-  ChevronLeft
+  ChevronLeft,
+  Menu
 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 const mainNavItems = [
   {
@@ -54,17 +58,89 @@ const mainNavItems = [
   },
 ];
 
+const toolsNavItems = [
+  {
+    title: "AI Advisor",
+    path: "/ai-advisor",
+    icon: MessageSquare,
+  },
+  {
+    title: "Settings",
+    path: "/settings",
+    icon: Settings,
+  },
+];
+
 export function AppSidebar() {
   const location = useLocation();
+  const isMobile = useIsMobile();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  return (
+  // Main navigation renderer function for reuse in both desktop and mobile
+  const renderNavLinks = (items, groupTitle) => (
+    <SidebarGroup>
+      <SidebarGroupLabel>
+        {!isCollapsed && groupTitle}
+      </SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.path}>
+              <SidebarMenuButton asChild>
+                <Link 
+                  to={item.path}
+                  className={cn(
+                    "flex items-center gap-2",
+                    location.pathname === item.path && "text-primary"
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  {!isCollapsed && <span>{item.title}</span>}
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
+
+  // Mobile navigation using Sheet component
+  const MobileNav = () => (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="md:hidden">
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-[280px] p-0">
+        <div className="flex h-16 items-center border-b px-4">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary">
+            <TrendingUp className="h-4 w-4 text-primary-foreground" />
+          </div>
+          <span className="ml-2 font-semibold">Financial Time Machine</span>
+        </div>
+        <div className="py-4">
+          {renderNavLinks(mainNavItems, "Navigation")}
+          {renderNavLinks(toolsNavItems, "Tools")}
+        </div>
+        <div className="border-t p-4">
+          <div className="text-xs text-muted-foreground">
+            Financial Time Machine v1.0
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+
+  // Desktop sidebar
+  const DesktopSidebar = () => (
     <Sidebar
       className={cn(
-        "h-screen border-r",
+        "h-screen border-r hidden md:block",
         isCollapsed ? "w-[70px]" : "w-[240px]"
       )}
-      collapsed={isCollapsed}
     >
       <SidebarHeader className="flex h-16 items-center border-b px-4">
         <div className="flex items-center gap-2">
@@ -86,69 +162,8 @@ export function AppSidebar() {
         </button>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            {!isCollapsed && "Navigation"}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {mainNavItems.map((item) => (
-                <SidebarMenuItem key={item.path}>
-                  <SidebarMenuButton asChild>
-                    <Link 
-                      to={item.path}
-                      className={cn(
-                        "flex items-center gap-2",
-                        location.pathname === item.path && "text-primary"
-                      )}
-                    >
-                      <item.icon className="h-5 w-5" />
-                      {!isCollapsed && <span>{item.title}</span>}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            {!isCollapsed && "Tools"}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link 
-                    to="/ai-advisor"
-                    className={cn(
-                      "flex items-center gap-2",
-                      location.pathname === "/ai-advisor" && "text-primary"
-                    )}
-                  >
-                    <MessageSquare className="h-5 w-5" />
-                    {!isCollapsed && <span>AI Advisor</span>}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link 
-                    to="/settings"
-                    className={cn(
-                      "flex items-center gap-2",
-                      location.pathname === "/settings" && "text-primary"
-                    )}
-                  >
-                    <Settings className="h-5 w-5" />
-                    {!isCollapsed && <span>Settings</span>}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {renderNavLinks(mainNavItems, "Navigation")}
+        {renderNavLinks(toolsNavItems, "Tools")}
       </SidebarContent>
       <SidebarFooter className="border-t p-4">
         {!isCollapsed && (
@@ -158,5 +173,25 @@ export function AppSidebar() {
         )}
       </SidebarFooter>
     </Sidebar>
+  );
+
+  return (
+    <>
+      {isMobile ? (
+        <div className="sticky top-0 z-40 bg-background border-b">
+          <div className="flex h-16 items-center px-4">
+            <MobileNav />
+            <div className="ml-3 flex items-center">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary">
+                <TrendingUp className="h-4 w-4 text-primary-foreground" />
+              </div>
+              <span className="ml-2 font-semibold">Financial Time Machine</span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <DesktopSidebar />
+      )}
+    </>
   );
 }
