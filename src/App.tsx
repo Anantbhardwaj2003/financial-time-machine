@@ -1,9 +1,18 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Pages
 import Index from "./pages/Index";
+import Simulator from "./pages/Simulator";
+import Goals from "./pages/Goals";
+import Spending from "./pages/Spending";
+import PastDecisions from "./pages/PastDecisions";
+import AiAdvisor from "./pages/AiAdvisor";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -16,7 +25,12 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/simulator" element={<Simulator />} />
+          <Route path="/goals" element={<Goals />} />
+          <Route path="/spending" element={<Spending />} />
+          <Route path="/past-decisions" element={<PastDecisions />} />
+          <Route path="/ai-advisor" element={<AiAdvisor />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
