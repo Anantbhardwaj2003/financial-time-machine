@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 // Pages
 import Index from "./pages/Index";
@@ -20,20 +21,22 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/simulator" element={<Simulator />} />
-          <Route path="/goals" element={<Goals />} />
-          <Route path="/spending" element={<Spending />} />
-          <Route path="/past-decisions" element={<PastDecisions />} />
-          <Route path="/ai-advisor" element={<AiAdvisor />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <SidebarProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/simulator" element={<Simulator />} />
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/spending" element={<Spending />} />
+            <Route path="/past-decisions" element={<PastDecisions />} />
+            <Route path="/ai-advisor" element={<AiAdvisor />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </SidebarProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
