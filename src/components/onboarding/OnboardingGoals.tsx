@@ -23,6 +23,8 @@ interface Goal {
   targetAmount?: number;
   targetDate?: string;
   isCustom?: boolean;
+  // Adding the icon property to the Goal interface
+  icon?: string;
 }
 
 interface OnboardingGoalsProps {
