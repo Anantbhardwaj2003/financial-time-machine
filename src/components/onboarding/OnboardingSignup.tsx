@@ -13,7 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Mail, User, Lock } from "lucide-react";
+import { Mail, User, Lock, TrendingUp } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -31,6 +32,7 @@ interface OnboardingSignupProps {
 
 export function OnboardingSignup({ userData, updateUserData, onNext }: OnboardingSignupProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const isMobile = useIsMobile();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -58,8 +60,16 @@ export function OnboardingSignup({ userData, updateUserData, onNext }: Onboardin
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center space-y-2">
+    <div className="space-y-6 max-w-md mx-auto">
+      <div className="text-center space-y-4">
+        <div className="flex justify-center mb-6">
+          <div className="flex items-center justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
+              <TrendingUp className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <span className="ml-3 text-xl font-bold">Financial Time Machine</span>
+          </div>
+        </div>
         <h1 className="text-2xl font-bold tracking-tight">Create Your Account</h1>
         <p className="text-muted-foreground">
           Get started with your financial journey
@@ -119,7 +129,7 @@ export function OnboardingSignup({ userData, updateUserData, onNext }: Onboardin
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full mt-6" disabled={isLoading}>
             {isLoading ? "Creating Account..." : "Create Account"}
           </Button>
         </form>
