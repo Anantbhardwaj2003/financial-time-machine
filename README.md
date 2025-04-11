@@ -104,5 +104,5 @@ Contributions are welcome! Whether it's feature requests, bug fixes, or design i
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/financial-time-machine.git
+git clone https://github.com/anantbhardwaj2003/financial-time-machine.git
 cd financial-time-machine
