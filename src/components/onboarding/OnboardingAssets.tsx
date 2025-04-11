@@ -1,53 +1,9 @@
 
 import { useState } from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, ArrowRight, Home, Car, Wallet, CreditCard } from "lucide-react";
-
-const assetSchema = z.object({
-  home: z.string().refine((val) => val === "" || (!isNaN(Number(val)) && Number(val) >= 0), {
-    message: "Value must be a positive number",
-  }),
-  car: z.string().refine((val) => val === "" || (!isNaN(Number(val)) && Number(val) >= 0), {
-    message: "Value must be a positive number",
-  }),
-  savings: z.string().refine((val) => val === "" || (!isNaN(Number(val)) && Number(val) >= 0), {
-    message: "Value must be a positive number",
-  }),
-  investments: z.string().refine((val) => val === "" || (!isNaN(Number(val)) && Number(val) >= 0), {
-    message: "Value must be a positive number",
-  }),
-});
-
-const debtSchema = z.object({
-  mortgage: z.string().refine((val) => val === "" || (!isNaN(Number(val)) && Number(val) >= 0), {
-    message: "Value must be a positive number",
-  }),
-  carLoan: z.string().refine((val) => val === "" || (!isNaN(Number(val)) && Number(val) >= 0), {
-    message: "Value must be a positive number",
-  }),
-  studentLoans: z.string().refine((val) => val === "" || (!isNaN(Number(val)) && Number(val) >= 0), {
-    message: "Value must be a positive number",
-  }),
-  creditCards: z.string().refine((val) => val === "" || (!isNaN(Number(val)) && Number(val) >= 0), {
-    message: "Value must be a positive number",
-  }),
-});
-
-type AssetFormData = z.infer<typeof assetSchema>;
-type DebtFormData = z.infer<typeof debtSchema>;
+import { AssetForm, AssetFormData } from "./assets/AssetForm";
+import { DebtForm, DebtFormData } from "./assets/DebtForm";
+import { Asset, Debt } from "./assets/types";
 
 interface OnboardingAssetsProps {
   userData: any;
@@ -61,34 +17,28 @@ export function OnboardingAssets({ userData, updateUserData, onNext, onBack }: O
   
   // Get existing asset/debt or set defaults
   const getAssetValue = (type: string) => {
-    const asset = userData.assets?.find((a: any) => a.type === type);
+    const asset = userData.assets?.find((a: Asset) => a.type === type);
     return asset ? asset.value.toString() : "";
   };
 
   const getDebtValue = (type: string) => {
-    const debt = userData.debts?.find((d: any) => d.type === type);
+    const debt = userData.debts?.find((d: Debt) => d.type === type);
     return debt ? debt.value.toString() : "";
   };
 
-  const assetForm = useForm<AssetFormData>({
-    resolver: zodResolver(assetSchema),
-    defaultValues: {
-      home: getAssetValue("home"),
-      car: getAssetValue("car"),
-      savings: getAssetValue("savings"),
-      investments: getAssetValue("investments"),
-    },
-  });
+  const assetInitialValues = {
+    home: getAssetValue("home"),
+    car: getAssetValue("car"),
+    savings: getAssetValue("savings"),
+    investments: getAssetValue("investments"),
+  };
 
-  const debtForm = useForm<DebtFormData>({
-    resolver: zodResolver(debtSchema),
-    defaultValues: {
-      mortgage: getDebtValue("mortgage"),
-      carLoan: getDebtValue("carLoan"),
-      studentLoans: getDebtValue("studentLoans"),
-      creditCards: getDebtValue("creditCards"),
-    },
-  });
+  const debtInitialValues = {
+    mortgage: getDebtValue("mortgage"),
+    carLoan: getDebtValue("carLoan"),
+    studentLoans: getDebtValue("studentLoans"),
+    creditCards: getDebtValue("creditCards"),
+  };
 
   const submitAssets = (data: AssetFormData) => {
     const assets = [
@@ -130,169 +80,19 @@ export function OnboardingAssets({ userData, updateUserData, onNext, onBack }: O
         </TabsList>
         
         <TabsContent value="assets" className="mt-4">
-          <Form {...assetForm}>
-            <form onSubmit={assetForm.handleSubmit(submitAssets)} className="space-y-4">
-              <FormField
-                control={assetForm.control}
-                name="home"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Home Value</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Home className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input type="number" min="0" placeholder="500000" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={assetForm.control}
-                name="car"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Vehicle Value</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Car className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input type="number" min="0" placeholder="25000" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={assetForm.control}
-                name="savings"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Savings</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Wallet className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input type="number" min="0" placeholder="15000" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={assetForm.control}
-                name="investments"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Investments</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Wallet className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input type="number" min="0" placeholder="50000" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex space-x-2 pt-2">
-                <Button type="button" variant="outline" onClick={onBack} className="flex-1">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back
-                </Button>
-                <Button type="submit" className="flex-1">
-                  Continue <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </form>
-          </Form>
+          <AssetForm 
+            initialValues={assetInitialValues} 
+            onSubmit={submitAssets} 
+            onBack={onBack} 
+          />
         </TabsContent>
         
         <TabsContent value="debts" className="mt-4">
-          <Form {...debtForm}>
-            <form onSubmit={debtForm.handleSubmit(submitDebts)} className="space-y-4">
-              <FormField
-                control={debtForm.control}
-                name="mortgage"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mortgage Balance</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Home className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input type="number" min="0" placeholder="300000" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={debtForm.control}
-                name="carLoan"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Car Loan Balance</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Car className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input type="number" min="0" placeholder="15000" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={debtForm.control}
-                name="studentLoans"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Student Loans</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Car className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input type="number" min="0" placeholder="40000" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={debtForm.control}
-                name="creditCards"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Credit Card Debt</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <CreditCard className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input type="number" min="0" placeholder="5000" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex space-x-2 pt-2">
-                <Button type="button" variant="outline" onClick={() => setActiveTab("assets")} className="flex-1">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back to Assets
-                </Button>
-                <Button type="submit" className="flex-1">
-                  Continue <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </form>
-          </Form>
+          <DebtForm 
+            initialValues={debtInitialValues} 
+            onSubmit={submitDebts} 
+            onBack={() => setActiveTab("assets")} 
+          />
         </TabsContent>
       </Tabs>
     </div>
