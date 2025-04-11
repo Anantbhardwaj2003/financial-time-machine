@@ -17,6 +17,7 @@ import {
   ReferenceLine,
   Legend
 } from "recharts";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ScenarioSimulatorProps {
   className?: string;
@@ -46,6 +47,7 @@ export function ScenarioSimulator({ className }: ScenarioSimulatorProps) {
   const [purchaseAmount, setPurchaseAmount] = useState(20000);
   const [purchaseMonth, setPurchaseMonth] = useState("Jun");
   const [timelineData, setTimelineData] = useState(defaultTimelineData);
+  const isMobile = useIsMobile();
   
   const handleRunSimulation = () => {
     // Create a simple simulation model
@@ -95,22 +97,23 @@ export function ScenarioSimulator({ className }: ScenarioSimulatorProps) {
   };
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle>Scenario Simulator</CardTitle>
+    <Card className={`${className} shadow-md border-t-4 border-t-primary animate-fade-in`}>
+      <CardHeader className="bg-gray-50 rounded-t-lg border-b">
+        <CardTitle className="text-xl text-center sm:text-left">Financial Scenario Simulator</CardTitle>
       </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="income">
-          <TabsList className="mb-4">
-            <TabsTrigger value="income">Income & Expenses</TabsTrigger>
-            <TabsTrigger value="investments">Investments</TabsTrigger>
-            <TabsTrigger value="purchases">Major Purchases</TabsTrigger>
+      <CardContent className={isMobile ? "p-3" : "p-6"}>
+        <Tabs defaultValue="income" className="w-full">
+          <TabsList className="mb-4 w-full grid grid-cols-3 h-auto">
+            <TabsTrigger value="income" className="py-2">Income & Expenses</TabsTrigger>
+            <TabsTrigger value="investments" className="py-2">Investments</TabsTrigger>
+            <TabsTrigger value="purchases" className="py-2">Major Purchases</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="income" className="space-y-4">
+          <TabsContent value="income" className="space-y-4 mt-4 p-1">
             <div className="space-y-2">
-              <div className="flex justify-between">
-                <Label>Monthly Income: ${income}</Label>
+              <div className="flex justify-between items-center">
+                <Label className="font-medium">Monthly Income</Label>
+                <span className="text-sm font-semibold text-primary">${income.toLocaleString()}</span>
               </div>
               <Slider 
                 value={[income]} 
@@ -118,12 +121,14 @@ export function ScenarioSimulator({ className }: ScenarioSimulatorProps) {
                 max={15000} 
                 step={100} 
                 onValueChange={(value) => setIncome(value[0])} 
+                className="my-4"
               />
             </div>
             
             <div className="space-y-2">
-              <div className="flex justify-between">
-                <Label>Monthly Expenses: ${expenses}</Label>
+              <div className="flex justify-between items-center">
+                <Label className="font-medium">Monthly Expenses</Label>
+                <span className="text-sm font-semibold text-primary">${expenses.toLocaleString()}</span>
               </div>
               <Slider 
                 value={[expenses]} 
@@ -131,14 +136,16 @@ export function ScenarioSimulator({ className }: ScenarioSimulatorProps) {
                 max={10000} 
                 step={100} 
                 onValueChange={(value) => setExpenses(value[0])} 
+                className="my-4"
               />
             </div>
           </TabsContent>
           
-          <TabsContent value="investments" className="space-y-4">
+          <TabsContent value="investments" className="space-y-4 mt-4 p-1">
             <div className="space-y-2">
-              <div className="flex justify-between">
-                <Label>Expected Annual Return: {investmentReturn}%</Label>
+              <div className="flex justify-between items-center">
+                <Label className="font-medium">Expected Annual Return</Label>
+                <span className="text-sm font-semibold text-primary">{investmentReturn}%</span>
               </div>
               <Slider 
                 value={[investmentReturn]} 
@@ -146,19 +153,20 @@ export function ScenarioSimulator({ className }: ScenarioSimulatorProps) {
                 max={15} 
                 step={0.5} 
                 onValueChange={(value) => setInvestmentReturn(value[0])} 
+                className="my-4"
               />
             </div>
           </TabsContent>
           
-          <TabsContent value="purchases" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TabsContent value="purchases" className="space-y-4 mt-4 p-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="space-y-2">
-                <Label>Purchase Type</Label>
+                <Label className="font-medium">Purchase Type</Label>
                 <Select 
                   value={purchaseType} 
                   onValueChange={setPurchaseType}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a purchase type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -172,12 +180,12 @@ export function ScenarioSimulator({ className }: ScenarioSimulatorProps) {
               </div>
               
               <div className="space-y-2">
-                <Label>Purchase Month</Label>
+                <Label className="font-medium">Purchase Month</Label>
                 <Select 
                   value={purchaseMonth} 
                   onValueChange={setPurchaseMonth}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select month" />
                   </SelectTrigger>
                   <SelectContent>
@@ -199,8 +207,9 @@ export function ScenarioSimulator({ className }: ScenarioSimulatorProps) {
             </div>
             
             <div className="space-y-2">
-              <div className="flex justify-between">
-                <Label>Purchase Amount: ${purchaseAmount.toLocaleString()}</Label>
+              <div className="flex justify-between items-center">
+                <Label className="font-medium">Purchase Amount</Label>
+                <span className="text-sm font-semibold text-primary">${purchaseAmount.toLocaleString()}</span>
               </div>
               <Slider 
                 value={[purchaseAmount]} 
@@ -208,18 +217,19 @@ export function ScenarioSimulator({ className }: ScenarioSimulatorProps) {
                 max={100000} 
                 step={1000} 
                 onValueChange={(value) => setPurchaseAmount(value[0])} 
+                className="my-4"
               />
             </div>
           </TabsContent>
         </Tabs>
         
         <div className="mt-6">
-          <Button onClick={handleRunSimulation} className="w-full">
+          <Button onClick={handleRunSimulation} className="w-full bg-primary hover:bg-primary/90">
             Run Simulation
           </Button>
         </div>
         
-        <div className="mt-6 h-80">
+        <div className="mt-6 h-80 p-1">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={timelineData}
@@ -234,7 +244,7 @@ export function ScenarioSimulator({ className }: ScenarioSimulatorProps) {
               <XAxis 
                 dataKey="month" 
                 tick={{ fontSize: 10 }} 
-                interval={1} 
+                interval={isMobile ? 2 : 1} 
               />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
