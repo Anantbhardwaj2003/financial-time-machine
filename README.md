@@ -80,10 +80,7 @@ Stay financially sharp with:
 
 - **Frontend:** React.js + Tailwind CSS
 - **Backend:** Node.js + Express
-- **AI Engine:** Python (Pandas, Scikit-learn), OpenAI APIs
-- **Data:** PostgreSQL + optional Plaid API for secure financial imports
-- **Security:** AES-256 Encryption, OAuth2
-- **Hosting:** Vercel / Netlify (Frontend), Heroku / Render / Railway (Backend)
+- **Hosting:** Netlify (Frontend)
 
 ---
 
